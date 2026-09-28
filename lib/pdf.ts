@@ -70,7 +70,7 @@ function recordLines(row: FeedbackRecord) {
 
 export function renderFeedbackPdf(rows: FeedbackRecord[]) {
   const width = 90;
-  const lines = ["CandexAI client feedback", ""];
+  const lines = ["CandexAI feedback", ""];
   if (!rows.length) lines.push("No submissions match this export.");
   for (const row of rows) lines.push(...recordLines(row), "");
 

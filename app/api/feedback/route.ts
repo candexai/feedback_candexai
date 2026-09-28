@@ -105,7 +105,7 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
-    console.error("Failed to save client feedback", error instanceof Error ? error.message : "unknown");
+    console.error("Failed to save feedback", error instanceof Error ? error.message : "unknown");
     return NextResponse.json(
       { error: "Could not save feedback. Try again in a moment." },
       { status: 500 },

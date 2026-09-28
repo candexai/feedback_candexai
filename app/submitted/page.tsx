@@ -36,7 +36,7 @@ export default function SubmittedPage() {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-4 py-10">
+      <main className="mx-auto max-w-6xl px-4 py-10">
         {!ready ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
         {ready && !confirmation ? (
           <div className="rounded-lg border border-border bg-card px-6 py-12 text-center">
@@ -72,7 +72,7 @@ export default function SubmittedPage() {
             </div>
             <dl className="mt-6 space-y-3 text-sm">
               <div>
-                <dt className="text-muted-foreground">Client / project</dt>
+                <dt className="text-muted-foreground">Company / project</dt>
                 <dd>{confirmation.clientCompany} — {confirmation.projectCampaign}</dd>
               </div>
               <div>

@@ -12,7 +12,6 @@ export default function AdminPage() {
   return (
     <>
       <SiteHeader
-        wide
         trailing={
           <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
             Feedback form

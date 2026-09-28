@@ -146,7 +146,7 @@ export function AdminDashboard() {
         <p className="text-[11.5px] font-medium uppercase tracking-[0.09em] text-zinc-600">Admin</p>
         <h1 className="mt-1 font-heading text-3xl font-semibold tracking-tight">Feedback inbox</h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Client submissions stay on this side of the portal. The public form cannot list them.
+          Submissions stay on this side of the portal. The public form cannot list them.
         </p>
         <label htmlFor="password" className="mt-5 block text-sm font-medium">Password</label>
         <input
@@ -169,7 +169,7 @@ export function AdminDashboard() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-[11.5px] font-medium uppercase tracking-[0.09em] text-zinc-600">Admin</p>
-          <h1 className="mt-1 font-heading text-3xl font-semibold tracking-tight">Client feedback</h1>
+          <h1 className="mt-1 font-heading text-3xl font-semibold tracking-tight">Feedback</h1>
         </div>
         <button type="button" onClick={() => void logout()} className="h-9 rounded-lg border border-border bg-card px-3 text-sm">
           Sign out
@@ -183,7 +183,7 @@ export function AdminDashboard() {
           void load();
         }}
       >
-        <input className="h-10 rounded-md border border-input px-3 text-sm lg:col-span-1" placeholder="Client" value={filters.client} onChange={(event) => setFilters({ ...filters, client: event.target.value })} />
+        <input className="h-10 rounded-md border border-input px-3 text-sm lg:col-span-1" placeholder="Company" value={filters.client} onChange={(event) => setFilters({ ...filters, client: event.target.value })} />
         <input className="h-10 rounded-md border border-input px-3 text-sm" placeholder="Project" value={filters.project} onChange={(event) => setFilters({ ...filters, project: event.target.value })} />
         <input type="date" className="h-10 rounded-md border border-input px-3 text-sm" value={filters.from} onChange={(event) => setFilters({ ...filters, from: event.target.value })} />
         <input type="date" className="h-10 rounded-md border border-input px-3 text-sm" value={filters.to} onChange={(event) => setFilters({ ...filters, to: event.target.value })} />

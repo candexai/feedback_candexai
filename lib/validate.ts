@@ -82,7 +82,7 @@ export function validateSubmission(body: unknown): {
     return { errors: {}, value: null, spam: true };
   }
 
-  const clientCompany = requireText(body.clientCompany, "clientCompany", "the client or company name", 2, 160, errors);
+  const clientCompany = requireText(body.clientCompany, "clientCompany", "the company name", 2, 160, errors);
   const projectCampaign = requireText(body.projectCampaign, "projectCampaign", "the project or campaign", 2, 160, errors);
   const campaignStart = clean(body.campaignStart);
   const campaignEnd = clean(body.campaignEnd);
@@ -140,9 +140,23 @@ export function validateSubmission(body: unknown): {
 
   if (testimonialWilling) {
     testimonialText = requireText(body.testimonialText, "testimonialText", "the testimonial", 20, 2000, errors);
-    testimonialName = reviewerName;
-    testimonialDesignation = reviewerDesignation;
-    testimonialCompany = clientCompany;
+    testimonialName = requireText(body.testimonialName, "testimonialName", "the name for the testimonial", 2, 120, errors);
+    testimonialDesignation = requireText(
+      body.testimonialDesignation,
+      "testimonialDesignation",
+      "the designation for the testimonial",
+      2,
+      120,
+      errors,
+    );
+    testimonialCompany = requireText(
+      body.testimonialCompany,
+      "testimonialCompany",
+      "the company for the testimonial",
+      2,
+      160,
+      errors,
+    );
     testimonialLinkedin = clean(body.testimonialLinkedin);
     if (testimonialLinkedin) {
       const linkedinOk =

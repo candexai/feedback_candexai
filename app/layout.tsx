@@ -17,7 +17,7 @@ const cactus = Cactus_Classical_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "CandexAI client feedback",
+  title: "CandexAI feedback",
   description: "Share how CandexAI is working for your organization.",
 };
 

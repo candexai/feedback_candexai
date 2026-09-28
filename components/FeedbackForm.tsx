@@ -68,6 +68,9 @@ export function FeedbackForm() {
   const [continueEngagement, setContinueEngagement] = useState("");
   const [willing, setWilling] = useState<boolean | null>(null);
   const [testimonialText, setTestimonialText] = useState("");
+  const [testimonialName, setTestimonialName] = useState("");
+  const [testimonialDesignation, setTestimonialDesignation] = useState("");
+  const [testimonialCompany, setTestimonialCompany] = useState("");
   const [testimonialLinkedin, setTestimonialLinkedin] = useState("");
   const [consentToUse, setConsentToUse] = useState(false);
   const [displayIdentity, setDisplayIdentity] = useState(false);
@@ -78,6 +81,11 @@ export function FeedbackForm() {
 
   function chooseWilling(next: boolean) {
     setWilling(next);
+    if (next) {
+      setTestimonialName((current) => current || reviewerName);
+      setTestimonialDesignation((current) => current || reviewerDesignation);
+      setTestimonialCompany((current) => current || clientCompany);
+    }
   }
 
   async function onSubmit(event: React.FormEvent) {
@@ -107,6 +115,9 @@ export function FeedbackForm() {
           continueEngagement,
           testimonialWilling: willing === true,
           testimonialText,
+          testimonialName,
+          testimonialDesignation,
+          testimonialCompany,
           testimonialLinkedin,
           consentToUse,
           displayIdentity,
@@ -145,12 +156,12 @@ export function FeedbackForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-4" noValidate>
       <div className="px-1">
-        <p className="text-[11.5px] font-medium uppercase tracking-[0.09em] text-zinc-600">Client feedback</p>
+        <p className="text-[11.5px] font-medium uppercase tracking-[0.09em] text-zinc-600">Feedback</p>
         <h1 className="mt-1 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
           How was your experience with CandexAI?
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-          This form is for the client who ran a pilot or campaign. Your answers are stored as submitted,
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+          This form is for the organization that ran a pilot or campaign. Your answers are stored as submitted,
           and a confirmation is sent to your official work email.
         </p>
       </div>
@@ -160,12 +171,12 @@ export function FeedbackForm() {
       ) : null}
 
       <Section
-        kicker="Client / project"
+        kicker="Organization"
         title="Who this feedback is for"
-        description="Use the company and campaign this review belongs to. The same form is used for every CandexAI client."
+        description="Use the company and campaign this review belongs to. The same form is used for every CandexAI engagement."
       >
         <div>
-          <Label htmlFor="clientCompany">Client / company name</Label>
+          <Label htmlFor="clientCompany">Company name</Label>
           <input id="clientCompany" className={fieldClass} value={clientCompany} maxLength={160} autoComplete="organization" onChange={(event) => setClientCompany(event.target.value)} />
           <FieldError message={errors.clientCompany} />
         </div>
@@ -277,7 +288,7 @@ export function FeedbackForm() {
       <Section
         kicker="Testimonial"
         title="Would you be comfortable providing a testimonial about your experience with CandexAI?"
-        description="If you say yes, we use the name, designation, and company you already entered. Your words are stored exactly as written."
+        description="If you say yes, add the name, designation, and company to show with the quote. Your words are stored exactly as written."
       >
         <div className="grid gap-2 sm:grid-cols-2" id="testimonialWilling">
           {[
@@ -303,6 +314,23 @@ export function FeedbackForm() {
               <Label htmlFor="testimonialText" hint="Write it in your own words. This original text is kept unchanged.">Testimonial</Label>
               <textarea id="testimonialText" className={textAreaClass} maxLength={2000} value={testimonialText} onChange={(event) => setTestimonialText(event.target.value)} />
               <FieldError message={errors.testimonialText} />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="testimonialName">Name</Label>
+                <input id="testimonialName" className={fieldClass} value={testimonialName} maxLength={120} onChange={(event) => setTestimonialName(event.target.value)} />
+                <FieldError message={errors.testimonialName} />
+              </div>
+              <div>
+                <Label htmlFor="testimonialDesignation">Designation</Label>
+                <input id="testimonialDesignation" className={fieldClass} value={testimonialDesignation} maxLength={120} onChange={(event) => setTestimonialDesignation(event.target.value)} />
+                <FieldError message={errors.testimonialDesignation} />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="testimonialCompany">Company</Label>
+              <input id="testimonialCompany" className={fieldClass} value={testimonialCompany} maxLength={160} onChange={(event) => setTestimonialCompany(event.target.value)} />
+              <FieldError message={errors.testimonialCompany} />
             </div>
             <div>
               <Label htmlFor="testimonialLinkedin" hint="Optional.">LinkedIn profile</Label>

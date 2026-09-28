@@ -5,7 +5,7 @@ const COLUMNS: { header: string; value: (row: FeedbackRecord) => unknown }[] = [
   { header: "Feedback ID", value: (row) => row.feedbackId },
   { header: "Submitted at", value: (row) => formatStamp(row.submittedAt) },
   { header: "Status", value: (row) => row.status },
-  { header: "Client / company", value: (row) => row.clientCompany },
+  { header: "Company", value: (row) => row.clientCompany },
   { header: "Project / campaign", value: (row) => row.projectCampaign },
   { header: "Campaign start", value: (row) => row.campaignStart },
   { header: "Campaign end", value: (row) => row.campaignEnd },
