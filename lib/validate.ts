@@ -45,9 +45,10 @@ function requireText(
   min: number,
   max: number,
   errors: Record<string, string>,
+  minMessage?: string,
 ) {
   const text = clean(value);
-  if (text.length < min) errors[key] = `Enter ${label}.`;
+  if (text.length < min) errors[key] = minMessage ?? `Enter ${label}.`;
   else if (text.length > max) errors[key] = `Keep ${label} under ${max} characters.`;
   return text;
 }
@@ -116,7 +117,15 @@ export function validateSubmission(body: unknown): {
   }
 
   const testimonialWilling = true;
-  const testimonialText = requireText(body.testimonialText, "testimonialText", "the testimonial", 20, 2000, errors);
+  const testimonialText = requireText(
+    body.testimonialText,
+    "testimonialText",
+    "the testimonial",
+    20,
+    2000,
+    errors,
+    "Write at least 20 characters.",
+  );
   const testimonialName = reviewerName;
   const testimonialDesignation = reviewerDesignation;
   const testimonialCompany = clientCompany;
