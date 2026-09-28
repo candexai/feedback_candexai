@@ -11,7 +11,7 @@ export function buildSubmission(
     { questionId: "aiCallQuality", prompt: "AI call quality", value: `${value.aiCallQuality} / 5` },
     {
       questionId: "campaignReliability",
-      prompt: "Campaign execution / reliability",
+      prompt: "Reliability",
       value: `${value.campaignReliability} / 5`,
     },
     {

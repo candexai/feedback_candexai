@@ -1,7 +1,6 @@
 import { CONTINUE_OPTIONS, PERFORMANCE_OPTIONS, TEXT_QUESTIONS } from "@/lib/questions";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export type SubmissionInput = {
   clientCompany: string;
@@ -62,13 +61,6 @@ function requireScore(value: unknown, key: string, errors: Record<string, string
   return score;
 }
 
-function validDate(value: string) {
-  if (!DATE_PATTERN.test(value)) return false;
-  const [year, month, day] = value.split("-").map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day));
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
-}
-
 export function validateSubmission(body: unknown): {
   errors: Record<string, string>;
   value: SubmissionInput | null;
@@ -83,14 +75,9 @@ export function validateSubmission(body: unknown): {
   }
 
   const clientCompany = requireText(body.clientCompany, "clientCompany", "the company name", 2, 160, errors);
-  const projectCampaign = requireText(body.projectCampaign, "projectCampaign", "the project or campaign", 2, 160, errors);
-  const campaignStart = clean(body.campaignStart);
-  const campaignEnd = clean(body.campaignEnd);
-  if (!validDate(campaignStart)) errors.campaignStart = "Choose the campaign start date.";
-  if (!validDate(campaignEnd)) errors.campaignEnd = "Choose the campaign end date.";
-  if (validDate(campaignStart) && validDate(campaignEnd) && campaignEnd < campaignStart) {
-    errors.campaignEnd = "The end date must be on or after the start date.";
-  }
+  const projectCampaign = "";
+  const campaignStart = "";
+  const campaignEnd = "";
 
   const reviewerName = requireText(body.reviewerName, "reviewerName", "the reviewer name", 2, 120, errors);
   const reviewerDesignation = requireText(
@@ -128,50 +115,17 @@ export function validateSubmission(body: unknown): {
     errors.continueEngagement = "Choose Yes, Maybe, or No.";
   }
 
-  const testimonialWilling = body.testimonialWilling === true;
-  let testimonialText = "";
-  let testimonialName = "";
-  let testimonialDesignation = "";
-  let testimonialCompany = "";
-  let testimonialLinkedin = "";
-  let consentToUse = false;
-  let displayIdentity = false;
-  let useLogo = false;
-
-  if (testimonialWilling) {
-    testimonialText = requireText(body.testimonialText, "testimonialText", "the testimonial", 20, 2000, errors);
-    testimonialName = requireText(body.testimonialName, "testimonialName", "the name for the testimonial", 2, 120, errors);
-    testimonialDesignation = requireText(
-      body.testimonialDesignation,
-      "testimonialDesignation",
-      "the designation for the testimonial",
-      2,
-      120,
-      errors,
-    );
-    testimonialCompany = requireText(
-      body.testimonialCompany,
-      "testimonialCompany",
-      "the company for the testimonial",
-      2,
-      160,
-      errors,
-    );
-    testimonialLinkedin = clean(body.testimonialLinkedin);
-    if (testimonialLinkedin) {
-      const linkedinOk =
-        testimonialLinkedin.length <= 300 &&
-        (/^https?:\/\/([a-z0-9-]+\.)*linkedin\.com\/.+/i.test(testimonialLinkedin) ||
-          /^([a-z0-9-]+\.)*linkedin\.com\/.+/i.test(testimonialLinkedin));
-      if (!linkedinOk) errors.testimonialLinkedin = "Enter a LinkedIn profile URL, or leave it blank.";
-      else if (!/^https?:\/\//i.test(testimonialLinkedin)) testimonialLinkedin = `https://${testimonialLinkedin}`;
-    }
-    consentToUse = body.consentToUse === true;
-    displayIdentity = body.displayIdentity === true;
-    useLogo = body.useLogo === true;
-    if (!consentToUse) {
-      errors.consentToUse = "Consent is required before CandexAI can keep this testimonial for marketing.";
-    }
+  const testimonialWilling = true;
+  const testimonialText = requireText(body.testimonialText, "testimonialText", "the testimonial", 20, 2000, errors);
+  const testimonialName = reviewerName;
+  const testimonialDesignation = reviewerDesignation;
+  const testimonialCompany = clientCompany;
+  const testimonialLinkedin = "";
+  const consentToUse = body.consentToUse === true;
+  const displayIdentity = body.displayIdentity === true;
+  const useLogo = body.useLogo === true;
+  if (!consentToUse) {
+    errors.consentToUse = "Consent is required before CandexAI can keep this testimonial for marketing.";
   }
 
   if (Object.keys(errors).length > 0) return { errors, value: null, spam: false };

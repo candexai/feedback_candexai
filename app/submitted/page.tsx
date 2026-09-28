@@ -6,7 +6,6 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { formatStamp } from "@/lib/format";
 
 type Confirmation = {
-  feedbackId: string;
   submittedAt: string;
   emailSent: boolean;
   clientCompany: string;
@@ -19,7 +18,6 @@ type Confirmation = {
 export default function SubmittedPage() {
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
   const [ready, setReady] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("candex-feedback-confirmation");
@@ -53,27 +51,13 @@ export default function SubmittedPage() {
             <h1 className="mt-2 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
               Thank you. Your feedback has been successfully submitted.
             </h1>
-            <p className="mt-4 text-sm text-muted-foreground">Feedback ID</p>
-            <div className="mt-2 flex flex-wrap items-center gap-3">
-              <p className="rounded-md bg-[var(--accent-tint)] px-3 py-2 font-heading text-2xl font-semibold tracking-tight">
-                {confirmation.feedbackId}
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  void navigator.clipboard.writeText(confirmation.feedbackId).then(() => {
-                    setCopied(true);
-                  });
-                }}
-                className="h-9 rounded-lg border border-border px-3 text-sm"
-              >
-                {copied ? "Copied" : "Copy"}
-              </button>
-            </div>
             <dl className="mt-6 space-y-3 text-sm">
               <div>
-                <dt className="text-muted-foreground">Company / project</dt>
-                <dd>{confirmation.clientCompany} — {confirmation.projectCampaign}</dd>
+                <dt className="text-muted-foreground">Company</dt>
+                <dd>
+                  {confirmation.clientCompany}
+                  {confirmation.projectCampaign ? ` — ${confirmation.projectCampaign}` : ""}
+                </dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">Submission date</dt>
@@ -84,7 +68,7 @@ export default function SubmittedPage() {
                 <dd>
                   {confirmation.emailSent
                     ? `Sent to ${confirmation.reviewerEmail}.`
-                    : `Saved, but the email to ${confirmation.reviewerEmail} could not be sent. Keep this feedback ID.`}
+                    : `Saved, but the email to ${confirmation.reviewerEmail} could not be sent.`}
                 </dd>
               </div>
             </dl>

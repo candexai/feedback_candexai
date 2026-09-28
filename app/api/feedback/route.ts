@@ -67,7 +67,6 @@ export async function POST(request: Request) {
 
     const email = await sendConfirmationEmail({
       to: value.reviewerEmail,
-      feedbackId: saved.feedbackId,
       clientCompany: value.clientCompany,
       projectCampaign: value.projectCampaign,
       submittedAt: now,
@@ -93,7 +92,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        feedbackId: saved.feedbackId,
         submittedAt: now.toISOString(),
         emailSent: email.sent,
         clientCompany: value.clientCompany,

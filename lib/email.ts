@@ -31,7 +31,6 @@ function transporter() {
 
 export async function sendConfirmationEmail(input: {
   to: string;
-  feedbackId: string;
   clientCompany: string;
   projectCampaign: string;
   submittedAt: Date;
@@ -63,9 +62,8 @@ export async function sendConfirmationEmail(input: {
   const text = [
     "Thank you. Your feedback has been successfully submitted.",
     "",
-    `Company / project: ${input.clientCompany} — ${input.projectCampaign}`,
+    `Company: ${input.clientCompany}${input.projectCampaign ? ` — ${input.projectCampaign}` : ""}`,
     `Submission date: ${submitted}`,
-    `Feedback ID: ${input.feedbackId}`,
     "",
     "Testimonial",
     testimonial,
@@ -86,9 +84,8 @@ export async function sendConfirmationEmail(input: {
       <h1 style="margin:0 0 12px;font-size:28px;line-height:1.2;">Thank you. Your feedback has been successfully submitted.</h1>
       <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#3f3f46;">Keep this note. It confirms what was received and whether you gave consent.</p>
       <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;">
-        <p style="margin:0 0 8px;font-size:14px;"><strong>Company / project</strong><br>${escapeHtml(input.clientCompany)} — ${escapeHtml(input.projectCampaign)}</p>
-        <p style="margin:0 0 8px;font-size:14px;"><strong>Submission date</strong><br>${escapeHtml(submitted)}</p>
-        <p style="margin:0 0 16px;font-size:14px;"><strong>Feedback ID</strong><br><span style="color:#cc7530;">${escapeHtml(input.feedbackId)}</span></p>
+        <p style="margin:0 0 8px;font-size:14px;"><strong>Company</strong><br>${escapeHtml(input.clientCompany)}${input.projectCampaign ? ` — ${escapeHtml(input.projectCampaign)}` : ""}</p>
+        <p style="margin:0 0 16px;font-size:14px;"><strong>Submission date</strong><br>${escapeHtml(submitted)}</p>
         <p style="margin:0 0 8px;font-size:14px;"><strong>Your submitted testimonial</strong></p>
         <p style="margin:0 0 16px;font-size:14px;line-height:1.6;white-space:pre-wrap;">${escapeHtml(testimonial)}</p>
         <p style="margin:0;font-size:14px;line-height:1.6;"><strong>Consent given</strong><br>${escapeHtml(consent)}<br>${escapeHtml(identity)}<br>${escapeHtml(logo)}</p>
@@ -101,7 +98,7 @@ export async function sendConfirmationEmail(input: {
     const info = await mailer.sendMail({
       from: `CandexAI <${fromAddress}>`,
       to: input.to,
-      subject: `CandexAI feedback received — ${input.feedbackId}`,
+      subject: "CandexAI feedback received",
       text,
       html,
       attachments: [

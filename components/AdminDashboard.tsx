@@ -220,7 +220,7 @@ export function AdminDashboard() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-heading text-lg font-semibold tracking-tight">{row.clientCompany}</p>
-                  <p className="text-sm text-muted-foreground">{row.projectCampaign}</p>
+                  {row.projectCampaign ? <p className="text-sm text-muted-foreground">{row.projectCampaign}</p> : null}
                   <p className="mt-1 text-sm">{row.reviewerName} · {row.reviewerDesignation}</p>
                   <p className="mt-1 text-xs text-zinc-500">{row.feedbackId} · {formatStamp(row.submittedAt)}</p>
                 </div>
@@ -238,8 +238,13 @@ export function AdminDashboard() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="font-heading text-2xl font-semibold tracking-tight">{detail.feedbackId}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{detail.clientCompany} · {detail.projectCampaign}</p>
-                <p className="text-sm text-muted-foreground">{detail.campaignStart} to {detail.campaignEnd}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {detail.clientCompany}
+                  {detail.projectCampaign ? ` · ${detail.projectCampaign}` : ""}
+                </p>
+                {detail.campaignStart ? (
+                  <p className="text-sm text-muted-foreground">{detail.campaignStart} to {detail.campaignEnd}</p>
+                ) : null}
               </div>
               <button type="button" onClick={() => void download("pdf", detail.feedbackId)} className="h-9 rounded-lg border border-border px-3 text-sm">PDF</button>
             </div>

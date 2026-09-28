@@ -37,8 +37,8 @@ function recordLines(row: FeedbackRecord) {
   const answers = row.answers.map((answer) => `${answer.prompt}\n${answer.value || "—"}`).join("\n\n");
   return [
     row.feedbackId,
-    `${row.clientCompany} · ${row.projectCampaign}`,
-    `Campaign ${row.campaignStart} to ${row.campaignEnd}`,
+    row.projectCampaign ? `${row.clientCompany} · ${row.projectCampaign}` : row.clientCompany,
+    row.campaignStart ? `Campaign ${row.campaignStart} to ${row.campaignEnd}` : "",
     `Reviewer: ${row.reviewerName}, ${row.reviewerDesignation}`,
     `Email: ${row.reviewerEmail}`,
     `Submitted: ${formatStamp(row.submittedAt)}`,

@@ -28,14 +28,14 @@ function Section({
   children,
 }: {
   kicker: string;
-  title: string;
+  title?: string;
   description: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="rounded-lg border border-border bg-card p-4 sm:p-6">
       <p className="text-[11.5px] font-medium uppercase tracking-[0.09em] text-zinc-600">{kicker}</p>
-      <h2 className="mt-1 font-heading text-2xl font-semibold tracking-tight">{title}</h2>
+      {title ? <h2 className="mt-1 font-heading text-2xl font-semibold tracking-tight">{title}</h2> : null}
       <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{description}</p>
       <div className="mt-5 space-y-5">{children}</div>
     </section>
@@ -56,9 +56,6 @@ function Label({ htmlFor, children, hint }: { htmlFor: string; children: React.R
 export function FeedbackForm() {
   const router = useRouter();
   const [clientCompany, setClientCompany] = useState("");
-  const [projectCampaign, setProjectCampaign] = useState("");
-  const [campaignStart, setCampaignStart] = useState("");
-  const [campaignEnd, setCampaignEnd] = useState("");
   const [reviewerName, setReviewerName] = useState("");
   const [reviewerDesignation, setReviewerDesignation] = useState("");
   const [reviewerEmail, setReviewerEmail] = useState("");
@@ -66,27 +63,13 @@ export function FeedbackForm() {
   const [performance, setPerformance] = useState("");
   const [text, setText] = useState<Record<string, string>>({});
   const [continueEngagement, setContinueEngagement] = useState("");
-  const [willing, setWilling] = useState<boolean | null>(null);
   const [testimonialText, setTestimonialText] = useState("");
-  const [testimonialName, setTestimonialName] = useState("");
-  const [testimonialDesignation, setTestimonialDesignation] = useState("");
-  const [testimonialCompany, setTestimonialCompany] = useState("");
-  const [testimonialLinkedin, setTestimonialLinkedin] = useState("");
   const [consentToUse, setConsentToUse] = useState(false);
   const [displayIdentity, setDisplayIdentity] = useState(false);
   const [useLogo, setUseLogo] = useState(false);
   const [website, setWebsite] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
-
-  function chooseWilling(next: boolean) {
-    setWilling(next);
-    if (next) {
-      setTestimonialName((current) => current || reviewerName);
-      setTestimonialDesignation((current) => current || reviewerDesignation);
-      setTestimonialCompany((current) => current || clientCompany);
-    }
-  }
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -98,9 +81,6 @@ export function FeedbackForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clientCompany,
-          projectCampaign,
-          campaignStart,
-          campaignEnd,
           reviewerName,
           reviewerDesignation,
           reviewerEmail,
@@ -113,12 +93,7 @@ export function FeedbackForm() {
           shouldImprove: text.shouldImprove ?? "",
           additionalFeedback: text.additionalFeedback ?? "",
           continueEngagement,
-          testimonialWilling: willing === true,
           testimonialText,
-          testimonialName,
-          testimonialDesignation,
-          testimonialCompany,
-          testimonialLinkedin,
           consentToUse,
           displayIdentity,
           useLogo,
@@ -126,7 +101,6 @@ export function FeedbackForm() {
         }),
       });
       const payload = (await response.json()) as {
-        feedbackId?: string;
         submittedAt?: string;
         emailSent?: boolean;
         clientCompany?: string;
@@ -137,7 +111,7 @@ export function FeedbackForm() {
         fields?: Record<string, string>;
         error?: string;
       };
-      if (!response.ok || !payload.feedbackId) {
+      if (!response.ok || !payload.submittedAt) {
         const fields = payload.fields ?? { form: payload.error ?? "Could not save feedback." };
         setErrors(fields);
         const first = Object.keys(fields)[0];
@@ -173,29 +147,12 @@ export function FeedbackForm() {
       <Section
         kicker="Organization"
         title="Who this feedback is for"
-        description="Use the company and campaign this review belongs to. The same form is used for every CandexAI engagement."
+        description="Use the company this review belongs to. The same form is used for every CandexAI engagement."
       >
         <div>
           <Label htmlFor="clientCompany">Company name</Label>
           <input id="clientCompany" className={fieldClass} value={clientCompany} maxLength={160} autoComplete="organization" onChange={(event) => setClientCompany(event.target.value)} />
           <FieldError message={errors.clientCompany} />
-        </div>
-        <div>
-          <Label htmlFor="projectCampaign" hint="The pilot, project, or campaign name.">Project / campaign</Label>
-          <input id="projectCampaign" className={fieldClass} value={projectCampaign} maxLength={160} onChange={(event) => setProjectCampaign(event.target.value)} />
-          <FieldError message={errors.projectCampaign} />
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="campaignStart">Campaign start</Label>
-            <input id="campaignStart" type="date" className={fieldClass} value={campaignStart} onChange={(event) => setCampaignStart(event.target.value)} />
-            <FieldError message={errors.campaignStart} />
-          </div>
-          <div>
-            <Label htmlFor="campaignEnd">Campaign end</Label>
-            <input id="campaignEnd" type="date" className={fieldClass} value={campaignEnd} onChange={(event) => setCampaignEnd(event.target.value)} />
-            <FieldError message={errors.campaignEnd} />
-          </div>
         </div>
         <div>
           <Label htmlFor="reviewerName">Reviewer name</Label>
@@ -287,75 +244,30 @@ export function FeedbackForm() {
 
       <Section
         kicker="Testimonial"
-        title="Would you be comfortable providing a testimonial about your experience with CandexAI?"
-        description="If you say yes, add the name, designation, and company to show with the quote. Your words are stored exactly as written."
+        description="Required. Write it in your own words. CandexAI will use this as a testimonial, with the name, designation, and company from above."
       >
-        <div className="grid gap-2 sm:grid-cols-2" id="testimonialWilling">
-          {[
-            { label: "Yes", value: true },
-            { label: "No", value: false },
-          ].map((option) => (
-            <button
-              key={option.label}
-              type="button"
-              onClick={() => chooseWilling(option.value)}
-              className={`h-11 rounded-md border text-sm font-medium ${
-                willing === option.value ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
+        <div>
+          <Label htmlFor="testimonialText" hint="This original text is kept unchanged.">Testimonial</Label>
+          <textarea id="testimonialText" className={textAreaClass} maxLength={2000} required value={testimonialText} onChange={(event) => setTestimonialText(event.target.value)} />
+          <FieldError message={errors.testimonialText} />
         </div>
 
-        {willing ? (
-          <div className="space-y-5">
-            <div>
-              <Label htmlFor="testimonialText" hint="Write it in your own words. This original text is kept unchanged.">Testimonial</Label>
-              <textarea id="testimonialText" className={textAreaClass} maxLength={2000} value={testimonialText} onChange={(event) => setTestimonialText(event.target.value)} />
-              <FieldError message={errors.testimonialText} />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="testimonialName">Name</Label>
-                <input id="testimonialName" className={fieldClass} value={testimonialName} maxLength={120} onChange={(event) => setTestimonialName(event.target.value)} />
-                <FieldError message={errors.testimonialName} />
-              </div>
-              <div>
-                <Label htmlFor="testimonialDesignation">Designation</Label>
-                <input id="testimonialDesignation" className={fieldClass} value={testimonialDesignation} maxLength={120} onChange={(event) => setTestimonialDesignation(event.target.value)} />
-                <FieldError message={errors.testimonialDesignation} />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="testimonialCompany">Company</Label>
-              <input id="testimonialCompany" className={fieldClass} value={testimonialCompany} maxLength={160} onChange={(event) => setTestimonialCompany(event.target.value)} />
-              <FieldError message={errors.testimonialCompany} />
-            </div>
-            <div>
-              <Label htmlFor="testimonialLinkedin" hint="Optional.">LinkedIn profile</Label>
-              <input id="testimonialLinkedin" className={fieldClass} value={testimonialLinkedin} maxLength={300} placeholder="https://www.linkedin.com/in/…" onChange={(event) => setTestimonialLinkedin(event.target.value)} />
-              <FieldError message={errors.testimonialLinkedin} />
-            </div>
-
-            <div id="consentToUse" className="space-y-3 rounded-md border border-primary/40 bg-[var(--accent-tint)] p-4">
-              <label className="flex items-start gap-3 text-sm leading-6">
-                <input type="checkbox" className="mt-1 accent-primary" checked={consentToUse} onChange={(event) => setConsentToUse(event.target.checked)} />
-                <span>I give CandexAI permission to use this testimonial in its website, sales presentations, investor materials and other marketing communications.</span>
-              </label>
-              <FieldError message={errors.consentToUse} />
-              <label className="flex items-start gap-3 text-sm leading-6">
-                <input type="checkbox" className="mt-1 accent-primary" checked={displayIdentity} onChange={(event) => setDisplayIdentity(event.target.checked)} />
-                <span>Permission to display name, designation, and company.</span>
-              </label>
-              <label className="flex items-start gap-3 text-sm leading-6">
-                <input type="checkbox" className="mt-1 accent-primary" checked={useLogo} onChange={(event) => setUseLogo(event.target.checked)} />
-                <span>Permission to use the company logo, if applicable.</span>
-              </label>
-              <p className="text-xs text-muted-foreground">The time you submit is stored with each permission you check.</p>
-            </div>
-          </div>
-        ) : null}
+        <div id="consentToUse" className="space-y-3 rounded-md border border-primary/40 bg-[var(--accent-tint)] p-4">
+          <label className="flex items-start gap-3 text-sm leading-6">
+            <input type="checkbox" className="mt-1 accent-primary" checked={consentToUse} onChange={(event) => setConsentToUse(event.target.checked)} />
+            <span>I give CandexAI permission to use this testimonial in its website, sales presentations, investor materials and other marketing communications.</span>
+          </label>
+          <FieldError message={errors.consentToUse} />
+          <label className="flex items-start gap-3 text-sm leading-6">
+            <input type="checkbox" className="mt-1 accent-primary" checked={displayIdentity} onChange={(event) => setDisplayIdentity(event.target.checked)} />
+            <span>Permission to display name, designation, and company.</span>
+          </label>
+          <label className="flex items-start gap-3 text-sm leading-6">
+            <input type="checkbox" className="mt-1 accent-primary" checked={useLogo} onChange={(event) => setUseLogo(event.target.checked)} />
+            <span>Permission to use the company logo, if applicable.</span>
+          </label>
+          <p className="text-xs text-muted-foreground">The time you submit is stored with each permission you check.</p>
+        </div>
       </Section>
 
       <div className="absolute -left-[9999px] h-px overflow-hidden" aria-hidden="true">
@@ -366,14 +278,11 @@ export function FeedbackForm() {
       <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
         <button
           type="submit"
-          disabled={submitting || willing === null}
+          disabled={submitting}
           className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground transition hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {submitting ? "Submitting…" : "Submit feedback"}
         </button>
-        {willing === null ? (
-          <p className="mt-3 text-sm text-muted-foreground">Choose whether you want to leave a testimonial, then submit.</p>
-        ) : null}
       </div>
     </form>
   );

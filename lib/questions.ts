@@ -19,7 +19,7 @@ export const RATING_QUESTIONS = [
   },
   {
     id: "campaignReliability",
-    prompt: "Campaign execution / reliability",
+    prompt: "Reliability",
     hint: "1 is unreliable. 5 is consistently reliable.",
   },
 ] as const;

@@ -26,9 +26,9 @@ const FeedbackSchema = new Schema(
   {
     feedbackId: { type: String, required: true, unique: true, index: true },
     clientCompany: { type: String, required: true, index: true },
-    projectCampaign: { type: String, required: true, index: true },
-    campaignStart: { type: String, required: true },
-    campaignEnd: { type: String, required: true },
+    projectCampaign: { type: String, default: "", index: true },
+    campaignStart: { type: String, default: "" },
+    campaignEnd: { type: String, default: "" },
     reviewerName: { type: String, required: true },
     reviewerDesignation: { type: String, required: true },
     reviewerEmail: { type: String, required: true, index: true },
@@ -79,5 +79,8 @@ const FeedbackSchema = new Schema(
   { collection: "client_feedback" },
 );
 
-export const ClientFeedback =
-  mongoose.models.ClientFeedback || mongoose.model("ClientFeedback", FeedbackSchema);
+if (mongoose.models.ClientFeedback) {
+  mongoose.deleteModel("ClientFeedback");
+}
+
+export const ClientFeedback = mongoose.model("ClientFeedback", FeedbackSchema);

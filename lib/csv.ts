@@ -14,7 +14,7 @@ const COLUMNS: { header: string; value: (row: FeedbackRecord) => unknown }[] = [
   { header: "Official email", value: (row) => row.reviewerEmail },
   { header: "Overall experience", value: (row) => row.ratings.overallExperience },
   { header: "AI call quality", value: (row) => row.ratings.aiCallQuality },
-  { header: "Campaign reliability", value: (row) => row.ratings.campaignReliability },
+  { header: "Reliability", value: (row) => row.ratings.campaignReliability },
   { header: "Performance vs expectations", value: (row) => row.performanceVsExpectations },
   { header: "Most valuable", value: (row) => row.answers.find((answer) => answer.questionId === "mostValuable")?.value ?? "" },
   { header: "Improvements observed", value: (row) => row.answers.find((answer) => answer.questionId === "improvementsObserved")?.value ?? "" },
