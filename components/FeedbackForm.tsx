@@ -68,9 +68,6 @@ export function FeedbackForm() {
   const [continueEngagement, setContinueEngagement] = useState("");
   const [willing, setWilling] = useState<boolean | null>(null);
   const [testimonialText, setTestimonialText] = useState("");
-  const [testimonialName, setTestimonialName] = useState("");
-  const [testimonialDesignation, setTestimonialDesignation] = useState("");
-  const [testimonialCompany, setTestimonialCompany] = useState("");
   const [testimonialLinkedin, setTestimonialLinkedin] = useState("");
   const [consentToUse, setConsentToUse] = useState(false);
   const [displayIdentity, setDisplayIdentity] = useState(false);
@@ -81,11 +78,6 @@ export function FeedbackForm() {
 
   function chooseWilling(next: boolean) {
     setWilling(next);
-    if (next) {
-      setTestimonialName((current) => current || reviewerName);
-      setTestimonialDesignation((current) => current || reviewerDesignation);
-      setTestimonialCompany((current) => current || clientCompany);
-    }
   }
 
   async function onSubmit(event: React.FormEvent) {
@@ -115,9 +107,6 @@ export function FeedbackForm() {
           continueEngagement,
           testimonialWilling: willing === true,
           testimonialText,
-          testimonialName,
-          testimonialDesignation,
-          testimonialCompany,
           testimonialLinkedin,
           consentToUse,
           displayIdentity,
@@ -288,7 +277,7 @@ export function FeedbackForm() {
       <Section
         kicker="Testimonial"
         title="Would you be comfortable providing a testimonial about your experience with CandexAI?"
-        description="If you say yes, we store your words exactly as you write them. A later marketing edit is kept separately and does not replace the original."
+        description="If you say yes, we use the name, designation, and company you already entered. Your words are stored exactly as written."
       >
         <div className="grid gap-2 sm:grid-cols-2" id="testimonialWilling">
           {[
@@ -314,23 +303,6 @@ export function FeedbackForm() {
               <Label htmlFor="testimonialText" hint="Write it in your own words. This original text is kept unchanged.">Testimonial</Label>
               <textarea id="testimonialText" className={textAreaClass} maxLength={2000} value={testimonialText} onChange={(event) => setTestimonialText(event.target.value)} />
               <FieldError message={errors.testimonialText} />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="testimonialName">Name</Label>
-                <input id="testimonialName" className={fieldClass} value={testimonialName} maxLength={120} onChange={(event) => setTestimonialName(event.target.value)} />
-                <FieldError message={errors.testimonialName} />
-              </div>
-              <div>
-                <Label htmlFor="testimonialDesignation">Designation</Label>
-                <input id="testimonialDesignation" className={fieldClass} value={testimonialDesignation} maxLength={120} onChange={(event) => setTestimonialDesignation(event.target.value)} />
-                <FieldError message={errors.testimonialDesignation} />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="testimonialCompany">Company</Label>
-              <input id="testimonialCompany" className={fieldClass} value={testimonialCompany} maxLength={160} onChange={(event) => setTestimonialCompany(event.target.value)} />
-              <FieldError message={errors.testimonialCompany} />
             </div>
             <div>
               <Label htmlFor="testimonialLinkedin" hint="Optional.">LinkedIn profile</Label>

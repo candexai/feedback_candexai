@@ -1,3 +1,4 @@
+import path from "path";
 import nodemailer from "nodemailer";
 import { formatStamp } from "@/lib/format";
 
@@ -81,7 +82,7 @@ export async function sendConfirmationEmail(input: {
 <html>
   <body style="margin:0;background:#f7f7f5;color:#0a0a0a;font-family:Georgia,serif;">
     <div style="max-width:560px;margin:0 auto;padding:32px 20px;">
-      <p style="margin:0 0 8px;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:#3f3f46;">CandexAI</p>
+      <img src="cid:candexai-logo" alt="CandexAI" width="210" style="display:block;width:210px;height:auto;margin:0 0 16px;border:0;" />
       <h1 style="margin:0 0 12px;font-size:28px;line-height:1.2;">Thank you. Your feedback has been successfully submitted.</h1>
       <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#3f3f46;">Keep this note. It confirms what was received and whether you gave consent.</p>
       <div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;">
@@ -103,6 +104,13 @@ export async function sendConfirmationEmail(input: {
       subject: `CandexAI feedback received — ${input.feedbackId}`,
       text,
       html,
+      attachments: [
+        {
+          filename: "candexai-logo.jpg",
+          path: path.join(process.cwd(), "public", "candexai-logo.jpg"),
+          cid: "candexai-logo",
+        },
+      ],
     });
     return { sent: true, messageId: info.messageId || "", error: "" };
   } catch (error) {

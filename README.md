@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3010. The admin inbox is at http://localhost:3010/responses.
+Open http://localhost:3010. The admin inbox is at http://localhost:3010/admin.
 
 ## Production
 
