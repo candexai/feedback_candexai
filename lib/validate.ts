@@ -133,9 +133,6 @@ export function validateSubmission(body: unknown): {
   const consentToUse = body.consentToUse === true;
   const displayIdentity = body.displayIdentity === true;
   const useLogo = body.useLogo === true;
-  if (!consentToUse) {
-    errors.consentToUse = "Consent is required before CandexAI can keep this testimonial for marketing.";
-  }
 
   if (Object.keys(errors).length > 0) return { errors, value: null, spam: false };
 
